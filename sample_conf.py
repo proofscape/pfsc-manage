@@ -16,14 +16,15 @@
 # with a slash. ***
 PFSC_ROOT = None
 
-# lib and build dirs
+# Subdirectories
 #
-# Ordinarily, the locations of the `lib` and `build` dirs on the host are
-# assumed to be `PFSC_ROOT/lib` and `PFSC_ROOT/build`. However, under some
-# circumstances you may want to use directories living somewhere else. In that
-# case, set the paths here. Leave as `None` to use the default locations.
+# Ordinarily, the `lib`, `build`, etc. dirs on the host are assumed to lie
+# directly under `PFSC_ROOT`. However, under some circumstances you may want to
+# use directories living somewhere else. In that case, set the paths here.
+# Leave as `None` to use the default locations.
 PFSC_LIB_ROOT = None
 PFSC_BUILD_ROOT = None
+PFSC_GRAPHDB_ROOT = None
 
 # Front End
 #

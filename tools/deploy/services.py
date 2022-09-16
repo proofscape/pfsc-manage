@@ -138,7 +138,7 @@ def redisgraph(tag=conf.REDISGRAPH_IMAGE_TAG):
     return {
         'image': f'redislabs/redisgraph:{tag}',
         'volumes': [
-            f'{PFSC_ROOT}/graphdb/{GdbCode.RE}:/data'
+            f'{get_proofscape_subdir_abs_fs_path_on_host("graphdb")}/{GdbCode.RE}:/data'
         ],
         'ports': [
             f'{conf.REDISGRAPH_MCA_HOST}:{conf.REDISGRAPH_MCA_PORT}:6379',
@@ -161,8 +161,8 @@ def neo4j(hosts=(conf.NEO4J_BROWSE_HOST, conf.NEO4J_BOLT_HOST),
     d = {
         'image': f'neo4j:{tag}',
         'volumes': [
-            f'{PFSC_ROOT}/graphdb/{GdbCode.NJ}/data:/data',
-            f'{PFSC_ROOT}/graphdb/{GdbCode.NJ}/logs:/logs',
+            f'{get_proofscape_subdir_abs_fs_path_on_host("graphdb")}/{GdbCode.NJ}/data:/data',
+            f'{get_proofscape_subdir_abs_fs_path_on_host("graphdb")}/{GdbCode.NJ}/logs:/logs',
         ],
         'environment': {
             'NEO4J_AUTH': 'none',
@@ -214,6 +214,8 @@ def get_proofscape_subdir_abs_fs_path_on_host(subdir_name):
         return resolve_fs_path("PFSC_LIB_ROOT")
     elif subdir_name == 'build' and conf.PFSC_BUILD_ROOT:
         return resolve_fs_path("PFSC_BUILD_ROOT")
+    elif subdir_name == 'graphdb' and conf.PFSC_GRAPHDB_ROOT:
+        return resolve_fs_path("PFSC_GRAPHDB_ROOT")
     else:
         return f'{PFSC_ROOT}/{subdir_name}'
 
