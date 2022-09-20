@@ -226,7 +226,7 @@ class CommonVars:
     Vars defined here will be added to both local.env and docker.env.
     """
     # ISE JavaScript
-    ISE_VERSION = '23.1'
+    ISE_VERSION = '23.3'
     ISE_SERVE_LOCALLY = 1
     ISE_SERVE_MINIFIED = 0
     MATHWORKER_SERVE_MINIFIED = 0
