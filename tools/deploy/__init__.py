@@ -724,7 +724,7 @@ def write_docker_compose_yaml(deploy_dir_name, deploy_dir_path, gdb, pfsc_tag,
         s_full[name] = svc_defn
         s_db[name] = copy.deepcopy(svc_defn)
 
-    if GdbCode.RE in gdb:
+    if GdbCode.RE in gdb and pfsc_conf.REDISINSIGHT_IMAGE_TAG:
         svc_ri = services.redisinsight()
         s_full['redisinsight'] = svc_ri
         s_db['redisinsight'] = copy.deepcopy(svc_ri)

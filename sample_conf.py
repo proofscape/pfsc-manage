@@ -146,11 +146,14 @@ JANUSGRAPH_PORT = 8183
 # These are the default docker image tags that will be used, for various services:
 REDIS_IMAGE_TAG = '6.2.1'
 REDISGRAPH_IMAGE_TAG = '2.4.13'
-REDISINSIGHT_IMAGE_TAG = '1.11.0'
 NEO4J_IMAGE_TAG = '4.0.6'
 GREMLIN_SERVER_IMAGE_TAG = '3.6.0'
 JANUSGRAPH_IMAGE_TAG = '0.6.0'
 NGINX_IMAGE_TAG = '1.22.0'
+# If you want RedisInsight to be dispatched as part of the MCA when RedisGraph
+# is being used, set a version tag here. Otherwise leave as None.
+# REDISINSIGHT_IMAGE_TAG = '1.11.0'
+REDISINSIGHT_IMAGE_TAG = None
 
 # Wheel Files
 #
