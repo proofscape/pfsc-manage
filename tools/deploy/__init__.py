@@ -163,7 +163,9 @@ def generate(gdb, pfsc_tag, oca_tag, workers, demos, mount_code, mount_pkg, dump
 
     # admin shell script
     admin_sh_script = write_admin_sh_script(
-        new_dir_name, new_dir_path, pfsc_tag, flask_config)
+        new_dir_name, new_dir_path, pfsc_tag, flask_config,
+        demos=demos, mount_code=mount_code, mount_pkg=mount_pkg
+    )
     admin_script_path = os.path.join(new_dir_path, 'admin.sh')
     with open(admin_script_path, 'w') as f:
         f.write(admin_sh_script)
@@ -639,7 +641,7 @@ ADMIN_SH_SCRIPT_TPLT = jinja2.Template(r"""#!/usr/bin/env sh
 #
 #   $ flask pfsc
 #
-# to conduct admin tasks, against the MCA's database. This ensures you have the
+# to conduct admin tasks w the MCA's gdb & build dir. This ensures you have the
 # expected combination of python version and python package versions, even when
 # operating the MCA on a host that doesn't necessarily use the same python
 # version.
@@ -652,21 +654,33 @@ ADMIN_SH_SCRIPT_TPLT = jinja2.Template(r"""#!/usr/bin/env sh
 
 {{docker_command}} run --rm -it --entrypoint=bash \
   --network="mca-{{deploy_dir_name}}" \
-  -v "{{deploy_dir_path}}/docker.env:/home/pfsc/proofscape/src/pfsc-server/instance/.env:ro" \
+{{bind_mounts}}
   -e FLASK_CONFIG={{flask_config}} \
   -e FLASK_APP=web \
   pfsc-server:{{pfsc_tag}}
 """)
 
 
-def write_admin_sh_script(deploy_dir_name, deploy_dir_path, pfsc_tag, flask_config):
+def write_admin_sh_script(
+        deploy_dir_name, deploy_dir_path, pfsc_tag, flask_config,
+        demos=False, mount_code=False, mount_pkg=None
+    ):
+    # Want all the same bind mounts that are used in a pfsc worker container,
+    # so that admin can do anything a worker can do.
+    d = services.pfsc_server(
+        deploy_dir_path, 'worker', flask_config, tag=pfsc_tag,
+        demos=demos, mount_code=mount_code, mount_pkg=mount_pkg
+    )
+    bind_mounts = '\n'.join([
+        f'  -v "{v}" \\' for v in d['volumes']
+    ])
     return ADMIN_SH_SCRIPT_TPLT.render(
         deploy_dir_name=deploy_dir_name,
-        deploy_dir_path=deploy_dir_path,
+        bind_mounts=bind_mounts,
         pfsc_tag=pfsc_tag,
         flask_config=flask_config,
         docker_command=pfsc_conf.DOCKER_CMD,
-    )
+    ) + '\n'
 
 
 RUN_OCA_SH_SCRIPT_TPLT = jinja2.Template(r"""#!/usr/bin/env sh
