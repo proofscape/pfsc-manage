@@ -89,6 +89,7 @@ def oca(seq_num, skip_check, dump, dry_run):
     print(f'  ise: {ise_vers}')
     print(f'  elkjs: {conf.CommonVars.ELKJS_VERSION}')
     print(f'  mathjax: {conf.CommonVars.MATHJAX_VERSION}')
+    print(f'  pdfjs: {conf.CommonVars.PDFJS_VERSION}')
     print(f'  pyodide: {conf.CommonVars.PYODIDE_VERSION}')
     print(f'  pfsc-examp: {conf.PFSC_EXAMP_VERSION}')
     print()

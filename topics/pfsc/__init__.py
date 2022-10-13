@@ -121,6 +121,7 @@ def write_oca_static_setup(tmp_dir_name, nginx=False):
         ise_version_dir_name=f'v{conf.CommonVars.ISE_VERSION}',
         mathjax_version_dir_name=f'v{conf.CommonVars.MATHJAX_VERSION}',
         elk_version_dir_name=f'v{conf.CommonVars.ELKJS_VERSION}',
+        pdfjs_version_dir_name=f'v{conf.CommonVars.PDFJS_VERSION}',
         pyodide_version_dir_name=vers_dir_name,
         pyodide_files=pyodide_files,
         wheels=list_wheel_filenames(),
@@ -135,6 +136,7 @@ def write_oca_final_setup(tmp_dir_name, final_workdir='/home/pfsc'):
         ise_version=conf.CommonVars.ISE_VERSION,
         elkjs_version=conf.CommonVars.ELKJS_VERSION,
         mathjax_version=conf.CommonVars.MATHJAX_VERSION,
+        pdfjs_version=conf.CommonVars.PDFJS_VERSION,
         pyodide_version=conf.CommonVars.PYODIDE_VERSION,
         wheel_filenames=','.join(list_wheel_filenames()),
     )

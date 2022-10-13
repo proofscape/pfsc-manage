@@ -310,7 +310,7 @@ def nginx(deploy_dir_path, tag=conf.NGINX_IMAGE_TAG,
             )
         d['volumes'].extend([
             f'{PFSC_ROOT}/PDFLibrary:/usr/share/nginx/PDFLibrary:ro',
-            f'{PFSC_ROOT}/src/pfsc-pdf/build/generic:/usr/share/nginx/pdfjs:ro',
+            f'{PFSC_ROOT}/src/pfsc-pdf/build/generic:/usr/share/nginx/pdfjs/v{conf.CommonVars.PDFJS_VERSION}:ro',
             f'{PFSC_ROOT}/src/pfsc-ise/dist/ise:/usr/share/nginx/ise/v{conf.CommonVars.ISE_VERSION}:ro',
             f'{PFSC_ROOT}/src/pfsc-ise/dist/dojo:/usr/share/nginx/dojo:ro',
             f'{PFSC_ROOT}/src/pfsc-ise/dist/mathjax:/usr/share/nginx/mathjax/v{conf.CommonVars.MATHJAX_VERSION}:ro',

@@ -43,7 +43,7 @@ def write_nginx_conf(
     # a mere list now, but for the moment I'm keeping it as a map.
     loc_map = {
         '/PDFLibrary': '/PDFLibrary',
-        '/pdfjs': '/pdfjs',
+        f'/pdfjs/v{pfsc_conf.CommonVars.PDFJS_VERSION}': f'/pdfjs/v{pfsc_conf.CommonVars.PDFJS_VERSION}',
         '/whl': '/whl',
         f'/pyodide/v{pfsc_conf.CommonVars.PYODIDE_VERSION}': f'/pyodide/v{pfsc_conf.CommonVars.PYODIDE_VERSION}',
         '/css': '/css',

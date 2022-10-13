@@ -127,7 +127,7 @@ def get_supporting_software_versions_for_server():
     cp.read(p)
     versions = {
         name: cp.get('versions', name)
-        for name in ['ise', 'elkjs', 'mathjax', 'pyodide', 'examp']
+        for name in ['ise', 'elkjs', 'mathjax', 'pyodide', 'examp', 'pdf']
     }
     return versions
 
@@ -143,4 +143,5 @@ def set_supporting_software_versions_for_server_in_conf():
     pfsc_conf.CommonVars.ELKJS_VERSION = versions['elkjs']
     pfsc_conf.CommonVars.MATHJAX_VERSION = versions['mathjax']
     pfsc_conf.CommonVars.PYODIDE_VERSION = versions['pyodide']
+    pfsc_conf.CommonVars.PDFJS_VERSION = versions['pdf']
     pfsc_conf.PFSC_EXAMP_VERSION = versions['examp']
