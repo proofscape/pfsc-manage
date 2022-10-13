@@ -253,6 +253,7 @@ def pfsc_server(deploy_dir_path, mode, flask_config, tag='latest',
     if mount_code:
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/pfsc:/home/pfsc/proofscape/src/pfsc-server/pfsc:ro')
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/config.py:/home/pfsc/proofscape/src/pfsc-server/config.py:ro')
+        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/pfsc.ini:/home/pfsc/proofscape/src/pfsc-server/pfsc.ini:ro')
     if mount_pkg:
         for pkg in [s.strip() for s in mount_pkg.split(',')]:
             d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/venv/lib/python3.8/site-packages/{pkg}:/usr/local/lib/python3.8/site-packages/{pkg}')
