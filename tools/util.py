@@ -17,6 +17,7 @@
 # --------------------------------------------------------------------------- #
 
 import os
+import re
 import pathlib
 from configparser import ConfigParser
 from datetime import datetime
@@ -145,3 +146,16 @@ def set_supporting_software_versions_for_server_in_conf():
     pfsc_conf.CommonVars.PYODIDE_VERSION = versions['pyodide']
     pfsc_conf.CommonVars.PDFJS_VERSION = versions['pdf']
     pfsc_conf.PFSC_EXAMP_VERSION = versions['examp']
+
+
+def get_server_version():
+    """
+    Get the version number of pfsc-server
+    """
+    with open(os.path.join(PFSC_ROOT, 'src', 'pfsc-server', 'pfsc', '__init__.py')) as f:
+        t = f.read()
+    M = re.search(r'__version__ = (.+)\n', t)
+    if not M:
+        raise click.UsageError('Could not find version number in pfsc-server.')
+    server_vers = M.group(1)[1:-1]  # cut quotation marks
+    return server_vers
