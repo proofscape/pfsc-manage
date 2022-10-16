@@ -1,3 +1,20 @@
+## 0.24.0 (221016)
+
+Features:
+
+* Include `pfsc.ini` in dev bind mounts
+* Improve `pfsc build oca`
+* Improve EULA
+
+Breaking Changes:
+
+* Use updated URLs for `pfsc-pdf` and for `pfsc-server`'s native static assets.
+
+Requires:
+
+* `pfsc-server >= 0.24.0`
+* `pfsc-ise >= 24.0`
+
 ## 0.23.3 (220920)
 
 Features:
