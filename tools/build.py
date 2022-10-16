@@ -182,7 +182,7 @@ def oca(release, dump, dry_run, tag):
         # licence file in there, then simply copies this file into still another
         # build stage (the final one).
 
-        step_1_tag = tag if dry_run else tag + '-without-license-file'
+        step_1_tag = tag if (dry_run or not release) else tag + '-without-license-file'
         step_2_tag = tag
         # Step 1
         finalize(df, 'pise', step_1_tag, dump, dry_run)
