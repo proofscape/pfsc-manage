@@ -29,8 +29,6 @@ RUN ln -s /proofscape/PDFLibrary /usr/share/nginx/PDFLibrary \
  && mkdir /usr/share/nginx/mathjax \
  && mkdir /usr/share/nginx/elk
 
-COPY pfsc-pdf/build/generic /usr/share/nginx/pdfjs
-
 {% for filename in pyodide_files %}
 COPY pyodide/{{pyodide_version_dir_name}}/{{filename}} /usr/share/nginx/pyodide/{{pyodide_version_dir_name}}/
 {% endfor %}
@@ -44,6 +42,8 @@ COPY pfsc-ise/dist/dojo /usr/share/nginx/dojo
 COPY pfsc-ise/dist/mathjax /usr/share/nginx/mathjax/{{mathjax_version_dir_name}}
 COPY pfsc-ise/dist/elk /usr/share/nginx/elk/{{elk_version_dir_name}}
 
+COPY pfsc-pdf/build/generic /usr/share/nginx/pdfjs/{{pdfjs_version_dir_name}}
+
 {% else %}
 
 WORKDIR /home/pfsc/proofscape/src/pfsc-server/static
@@ -51,8 +51,6 @@ RUN ln -s /proofscape/PDFLibrary \
  && mkdir -p pyodide/{{pyodide_version_dir_name}} \
  && mkdir whl \
  && mkdir -p {ise,dojo,mathjax,elk}
-
-COPY pfsc-pdf/build/generic ./pdfjs
 
 {% for filename in pyodide_files %}
 COPY pyodide/{{pyodide_version_dir_name}}/{{filename}} ./pyodide/{{pyodide_version_dir_name}}/
@@ -66,5 +64,7 @@ COPY pfsc-ise/dist/ise ./ise/{{ise_version_dir_name}}
 COPY pfsc-ise/dist/dojo ./dojo
 COPY pfsc-ise/dist/mathjax ./mathjax/{{mathjax_version_dir_name}}
 COPY pfsc-ise/dist/elk ./elk/{{elk_version_dir_name}}
+
+COPY pfsc-pdf/build/generic ./pdfjs/{{pdfjs_version_dir_name}}
 
 {% endif %}

@@ -20,7 +20,7 @@ from setuptools import setup
 
 setup(
     name='pfsc-manage',
-    version='0.23.4-dev',
+    version='0.24.0-dev',
     url='https://github.com/proofscape/pfsc-manage',
     py_modules=['manage'],
     install_requires=[

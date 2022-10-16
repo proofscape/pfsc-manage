@@ -25,7 +25,10 @@ import click
 import conf
 from manage import cli, PFSC_ROOT, PFSC_MANAGE_ROOT
 import tools.build
-from tools.util import set_supporting_software_versions_for_server_in_conf
+from tools.util import (
+    set_supporting_software_versions_for_server_in_conf,
+    get_server_version,
+)
 
 SRC_ROOT = os.path.join(PFSC_ROOT, 'src')
 
@@ -72,12 +75,7 @@ def oca(seq_num, skip_check, dump, dry_run):
         d = json.load(f)
     ise_vers = d["version"]
 
-    with open(os.path.join(SRC_ROOT, 'pfsc-server', 'pfsc', '__init__.py')) as f:
-        t = f.read()
-    M = re.search(r'__version__ = (.+)\n', t)
-    if not M:
-        raise click.UsageError('Could not find version number in pfsc-server.')
-    server_vers = M.group(1)[1:-1]  # cut quotation marks
+    server_vers = get_server_version()
 
     seq_num_suffix = f'-{seq_num}' if seq_num > 0 else ''
 
@@ -89,6 +87,7 @@ def oca(seq_num, skip_check, dump, dry_run):
     print(f'  ise: {ise_vers}')
     print(f'  elkjs: {conf.CommonVars.ELKJS_VERSION}')
     print(f'  mathjax: {conf.CommonVars.MATHJAX_VERSION}')
+    print(f'  pdfjs: {conf.CommonVars.PDFJS_VERSION}')
     print(f'  pyodide: {conf.CommonVars.PYODIDE_VERSION}')
     print(f'  pfsc-examp: {conf.PFSC_EXAMP_VERSION}')
     print()
@@ -131,12 +130,7 @@ def server(skip_check, demos, dump, dry_run):
     if not os.path.exists(venv_path):
         raise click.FileError(f'Could not find {venv_path}. Have you installed pfsc-server yet?')
 
-    with open(os.path.join(SRC_ROOT, 'pfsc-server', 'pfsc', '__init__.py')) as f:
-        t = f.read()
-    M = re.search(r'__version__ = (.+)\n', t)
-    if not M:
-        raise click.UsageError('Could not find version number in pfsc-server.')
-    server_vers = M.group(1)[1:-1]  # cut quotation marks
+    server_vers = get_server_version()
 
     tag = server_vers
 

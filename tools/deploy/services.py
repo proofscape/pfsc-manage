@@ -253,6 +253,7 @@ def pfsc_server(deploy_dir_path, mode, flask_config, tag='latest',
     if mount_code:
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/pfsc:/home/pfsc/proofscape/src/pfsc-server/pfsc:ro')
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/config.py:/home/pfsc/proofscape/src/pfsc-server/config.py:ro')
+        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/pfsc.ini:/home/pfsc/proofscape/src/pfsc-server/pfsc.ini:ro')
     if mount_pkg:
         for pkg in [s.strip() for s in mount_pkg.split(',')]:
             d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/venv/lib/python3.8/site-packages/{pkg}:/usr/local/lib/python3.8/site-packages/{pkg}')
@@ -310,7 +311,7 @@ def nginx(deploy_dir_path, tag=conf.NGINX_IMAGE_TAG,
             )
         d['volumes'].extend([
             f'{PFSC_ROOT}/PDFLibrary:/usr/share/nginx/PDFLibrary:ro',
-            f'{PFSC_ROOT}/src/pfsc-pdf/build/generic:/usr/share/nginx/pdfjs:ro',
+            f'{PFSC_ROOT}/src/pfsc-pdf/build/generic:/usr/share/nginx/pdfjs/v{conf.CommonVars.PDFJS_VERSION}:ro',
             f'{PFSC_ROOT}/src/pfsc-ise/dist/ise:/usr/share/nginx/ise/v{conf.CommonVars.ISE_VERSION}:ro',
             f'{PFSC_ROOT}/src/pfsc-ise/dist/dojo:/usr/share/nginx/dojo:ro',
             f'{PFSC_ROOT}/src/pfsc-ise/dist/mathjax:/usr/share/nginx/mathjax/v{conf.CommonVars.MATHJAX_VERSION}:ro',

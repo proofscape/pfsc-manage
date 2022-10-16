@@ -237,6 +237,8 @@ class CommonVars:
     MATHJAX_VERSION = '3.0.1'
     MATHJAX_SERVE_LOCALLY = 1
 
+    PDFJS_VERSION = '3.0.0'
+
     # Pyodide
     # During development, Pyodide should ordinarily be served locally. We also need
     # a local copy for building the OCA docker image.
