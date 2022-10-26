@@ -26,6 +26,8 @@ import conf
 from manage import PFSC_ROOT
 from tools.util import squash
 from tools.deploy import list_wheel_filenames
+from tools.util import get_version_numbers, get_server_version
+
 
 this_dir = os.path.dirname(__file__)
 templates_dir = os.path.join(this_dir, 'templates')
@@ -80,11 +82,12 @@ def write_pfsc_installation(
 
 
 def get_pyodide_major_minor_as_ints():
-    M, m, p = conf.CommonVars.PYODIDE_VERSION.split('.')
+    versions = get_version_numbers()
+    M, m, p = versions['pyodide'].split('.')
     return int(M), int(m)
 
 
-def write_oca_static_setup(tmp_dir_name, nginx=False):
+def write_oca_static_setup(tmp_dir_name):
     template = jinja_env.get_template('Dockerfile.oca_static')
 
     pyodide_files = """
@@ -94,6 +97,9 @@ def write_oca_static_setup(tmp_dir_name, nginx=False):
     project_names = """
     micropip pyparsing packaging Jinja2 MarkupSafe mpmath
     """.split()
+
+    versions = get_version_numbers()
+    server_vers = get_server_version()
 
     M, m = get_pyodide_major_minor_as_ints()
     if (M, m) < (0, 20):
@@ -106,8 +112,7 @@ def write_oca_static_setup(tmp_dir_name, nginx=False):
             pyodide_files.append('packages.json')
         else:
             pyodide_files.append('repodata.json')
-        vers_dir_name = f'v{conf.CommonVars.PYODIDE_VERSION}'
-        vers_path = pathlib.Path(PFSC_ROOT) / 'src' / 'pyodide' / vers_dir_name
+        vers_path = pathlib.Path(PFSC_ROOT) / 'src' / 'pyodide' / f'v{versions["pyodide"]}'
         for name in project_names:
             paths = list(vers_path.glob(f'{name}-*.whl'))
             # There should be exactly one wheel file for each project
@@ -117,12 +122,8 @@ def write_oca_static_setup(tmp_dir_name, nginx=False):
 
     return template.render(
         tmp_dir_name=tmp_dir_name,
-        nginx=nginx,
-        ise_version_dir_name=f'v{conf.CommonVars.ISE_VERSION}',
-        mathjax_version_dir_name=f'v{conf.CommonVars.MATHJAX_VERSION}',
-        elk_version_dir_name=f'v{conf.CommonVars.ELKJS_VERSION}',
-        pdfjs_version_dir_name=f'v{conf.CommonVars.PDFJS_VERSION}',
-        pyodide_version_dir_name=vers_dir_name,
+        versions=versions,
+        server_vers=server_vers,
         pyodide_files=pyodide_files,
         wheels=list_wheel_filenames(),
     )
@@ -130,15 +131,11 @@ def write_oca_static_setup(tmp_dir_name, nginx=False):
 
 def write_oca_final_setup(tmp_dir_name, final_workdir='/home/pfsc'):
     template = jinja_env.get_template('Dockerfile.oca_final_setup')
+    versions = get_version_numbers()
     return template.render(
         tmp_dir_name=tmp_dir_name,
         final_workdir=final_workdir,
-        ise_version=conf.CommonVars.ISE_VERSION,
-        elkjs_version=conf.CommonVars.ELKJS_VERSION,
-        mathjax_version=conf.CommonVars.MATHJAX_VERSION,
-        pdfjs_version=conf.CommonVars.PDFJS_VERSION,
-        pyodide_version=conf.CommonVars.PYODIDE_VERSION,
-        wheel_filenames=','.join(list_wheel_filenames()),
+        ise_version=versions['pfsc-ise'],
     )
 
 
@@ -192,7 +189,7 @@ def write_proofscape_oca_dockerfile(tmp_dir_name, demos=False):
         }, tmp_dir_name=tmp_dir_name
     )
     static_setup = write_oca_static_setup(
-        tmp_dir_name, nginx=False
+        tmp_dir_name
     )
     final_setup = write_oca_final_setup(
         tmp_dir_name, final_workdir='/home/pfsc'

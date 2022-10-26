@@ -18,7 +18,7 @@
 
 from manage import PFSC_ROOT
 import conf
-from tools.util import resolve_fs_path
+from tools.util import resolve_fs_path, get_version_numbers, get_server_version
 
 
 class GdbCode:
@@ -253,7 +253,6 @@ def pfsc_server(deploy_dir_path, mode, flask_config, tag='latest',
     if mount_code:
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/pfsc:/home/pfsc/proofscape/src/pfsc-server/pfsc:ro')
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/config.py:/home/pfsc/proofscape/src/pfsc-server/config.py:ro')
-        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/pfsc.ini:/home/pfsc/proofscape/src/pfsc-server/pfsc.ini:ro')
     if mount_pkg:
         for pkg in [s.strip() for s in mount_pkg.split(',')]:
             d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/venv/lib/python3.8/site-packages/{pkg}:/usr/local/lib/python3.8/site-packages/{pkg}')
@@ -272,15 +271,16 @@ def proofscape_oca(deploy_dir_path, tag='latest', mount_code=False, mount_pkg=No
             for direc in ['lib', 'build', 'graphdb', 'deploy', 'PDFLibrary']
         ],
     }
-
+    pfsc_server_vers = get_server_version()
+    versions = get_version_numbers()
     if mount_code:
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/pfsc:/home/pfsc/proofscape/src/pfsc-server/pfsc:ro')
-        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/static/css:/home/pfsc/proofscape/src/pfsc-server/static/css:ro')
-        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/static/img:/home/pfsc/proofscape/src/pfsc-server/static/img:ro')
+        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/static/css:/home/pfsc/proofscape/src/pfsc-server/static/v{pfsc_server_vers}/css:ro')
+        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/static/img:/home/pfsc/proofscape/src/pfsc-server/static/v{pfsc_server_vers}/img:ro')
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/config.py:/home/pfsc/proofscape/src/pfsc-server/config.py:ro')
         d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-server/web.py:/home/pfsc/proofscape/src/pfsc-server/web.py:ro')
-        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-ise/dist/ise.bundle.js:/home/pfsc/proofscape/src/pfsc-server/static/ise/v{conf.CommonVars.ISE_VERSION}/ise.bundle.js:ro')
-        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-pdf/build/generic:/home/pfsc/proofscape/src/pfsc-server/static/pdfjs:ro')
+        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-ise/dist/ise/ise.bundle.js:/home/pfsc/proofscape/src/pfsc-server/static/ise/v{versions["pfsc-ise"]}/ise.bundle.js:ro')
+        d['volumes'].append(f'{PFSC_ROOT}/src/pfsc-pdf/build/generic:/home/pfsc/proofscape/src/pfsc-server/static/pdfjs/v{versions["pfsc-pdf"]}:ro')
         d['volumes'].append(f'{PFSC_ROOT}/src/whl:/home/pfsc/proofscape/src/pfsc-server/static/whl:ro')
 
     if mount_pkg:
@@ -305,22 +305,23 @@ def nginx(deploy_dir_path, tag=conf.NGINX_IMAGE_TAG,
         ],
     }
     if not dummy:
+        versions = get_version_numbers()
         if conf.TWIN_ROOT_DIR:
             d['volumes'].append(
                 f'{resolve_fs_path("TWIN_ROOT_DIR")}:/usr/share/nginx/twin-site:ro'
             )
         d['volumes'].extend([
             f'{PFSC_ROOT}/PDFLibrary:/usr/share/nginx/PDFLibrary:ro',
-            f'{PFSC_ROOT}/src/pfsc-pdf/build/generic:/usr/share/nginx/pdfjs/v{conf.CommonVars.PDFJS_VERSION}:ro',
-            f'{PFSC_ROOT}/src/pfsc-ise/dist/ise:/usr/share/nginx/ise/v{conf.CommonVars.ISE_VERSION}:ro',
+            f'{PFSC_ROOT}/src/pfsc-pdf/build/generic:/usr/share/nginx/pdfjs:ro',
+            f'{PFSC_ROOT}/src/pfsc-ise/dist/ise:/usr/share/nginx/ise:ro',
             f'{PFSC_ROOT}/src/pfsc-ise/dist/dojo:/usr/share/nginx/dojo:ro',
-            f'{PFSC_ROOT}/src/pfsc-ise/dist/mathjax:/usr/share/nginx/mathjax/v{conf.CommonVars.MATHJAX_VERSION}:ro',
-            f'{PFSC_ROOT}/src/pfsc-ise/dist/elk:/usr/share/nginx/elk/v{conf.CommonVars.ELKJS_VERSION}:ro',
+            f'{PFSC_ROOT}/src/pfsc-ise/dist/mathjax:/usr/share/nginx/mathjax:ro',
+            f'{PFSC_ROOT}/src/pfsc-ise/dist/elk:/usr/share/nginx/elk:ro',
             f'{PFSC_ROOT}/src/pfsc-server/static/css:/usr/share/nginx/css:ro',
             f'{PFSC_ROOT}/src/pfsc-server/static/img:/usr/share/nginx/img:ro',
-            f'{PFSC_ROOT}/src/pyodide/v{conf.CommonVars.PYODIDE_VERSION}:/usr/share/nginx/pyodide/v{conf.CommonVars.PYODIDE_VERSION}:ro',
+            f'{PFSC_ROOT}/src/pyodide/v{versions["pyodide"]}:/usr/share/nginx/pyodide:ro',
         ])
-        if not conf.USE_REMOTE_WHEELS_IN_DOCKER_ENV:
+        if conf.CommonVars.PYODIDE_SERVE_LOCALLY:
             d['volumes'].append(f'{PFSC_ROOT}/src/whl:/usr/share/nginx/whl:ro')
     if conf.REDIRECT_HTTP_FROM:
         d['ports'].append(f"{host}:{conf.REDIRECT_HTTP_FROM}:80")

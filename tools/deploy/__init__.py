@@ -436,8 +436,6 @@ def write_local_dot_env(app_url_prefix, gdb, demos, secret=None):
     elif demos:
         print(f'WARNING: Asked to serve demo repos, but `{demo_path}` not found.')
 
-    write_wheels_dot_env(d, for_local=True)
-
     if conf.EMAIL_TEMPLATE_DIR:
         d["EMAIL_TEMPLATE_DIR"] = resolve_fs_path("EMAIL_TEMPLATE_DIR")
 
@@ -459,8 +457,6 @@ def write_docker_dot_env(app_url_prefix, gdb, demos, secret=None):
     if demos:
         d["PFSC_DEMO_ROOT"] = "/home/pfsc/demos"
         d["PROVIDE_DEMO_REPOS"] = 1
-
-    write_wheels_dot_env(d)
 
     if conf.EMAIL_TEMPLATE_DIR:
         d["EMAIL_TEMPLATE_DIR"] = "/home/pfsc/proofscape/src/_email_templates"
@@ -556,18 +552,6 @@ def list_wheel_filenames():
         latest = max(files)
         selected_filenames.append(latest.filename)
     return selected_filenames
-
-
-def write_wheels_dot_env(d, for_local=False):
-    d["PFSC_EXAMP_VERSION"] = pfsc_conf.PFSC_EXAMP_VERSION
-    use_remote = (
-        pfsc_conf.USE_REMOTE_WHEELS_IN_LOCAL_ENV and for_local
-        or
-        pfsc_conf.USE_REMOTE_WHEELS_IN_DOCKER_ENV and not for_local
-    )
-    if not use_remote:
-        selected_filenames = list_wheel_filenames()
-        d["LOCAL_WHL_FILENAMES"] = ', '.join(selected_filenames)
 
 
 def write_gdb_dot_env(d, gdb, uri_lookup_method, comment=False):

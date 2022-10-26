@@ -155,30 +155,6 @@ NGINX_IMAGE_TAG = '1.22.0'
 # REDISINSIGHT_IMAGE_TAG = '1.11.0'
 REDISINSIGHT_IMAGE_TAG = None
 
-# Wheel Files
-#
-# During development, the Python wheels running in the browser via Pyodide
-# should ordinarily be served locally (not from PyPI). We also need
-# local copies for building the OCA docker image.
-#
-# Local copies can be obtained by the `pfsc get wheels` command. The versions
-# you get are governed by the PFSC_EXAMP_VERSION variable, and the requirements
-# this version of pfsc-examp defines. They are saved in `PFSC_ROOT/src/whl`.
-#
-# During development you may also need to rebuild one or more wheels from local
-# repos. In this case, just use the `pfsc make whl` command for the project or
-# projects you're working on, e.g. `pfsc make whl sympy`. This will not only
-# rebuild the wheel, but will also copy it into the `whl` dir. You may then
-# also need to rerun `pfsc deploy generate`, which always looks for the latest
-# version of each wheel, and bind mounts this into the approp. docker container.
-#
-# Occasionally during testing you may want to use remote, not local wheels,
-# either for the local config (unit tests) or the docker config (MCA deployment).
-# You can control this with the corresponding boolean vars below.
-PFSC_EXAMP_VERSION = '0.22.8'
-USE_REMOTE_WHEELS_IN_DOCKER_ENV = False
-USE_REMOTE_WHEELS_IN_LOCAL_ENV = False
-
 # App URL Prefix
 #
 # The APP_URL_PREFIX supports different ways of deploying the Proofscape ISE.
@@ -225,26 +201,27 @@ class CommonVars:
     """
     Vars defined here will be added to both local.env and docker.env.
     """
-    # ISE JavaScript
-    ISE_VERSION = '23.3'
-    ISE_SERVE_LOCALLY = 1
+    ISE_VERSION = '25.0'
     ISE_SERVE_MINIFIED = 0
     MATHWORKER_SERVE_MINIFIED = 0
 
-    ELKJS_VERSION = '0.8.1'
+    ISE_SERVE_LOCALLY = 1
     ELKJS_SERVE_LOCALLY = 1
-
-    MATHJAX_VERSION = '3.0.1'
     MATHJAX_SERVE_LOCALLY = 1
-
-    PDFJS_VERSION = '3.0.0'
-
-    # Pyodide
-    # During development, Pyodide should ordinarily be served locally. We also need
-    # a local copy for building the OCA docker image.
-    # A local copy can be obtained by the `pfsc get pyodide` command.
-    PYODIDE_VERSION = '0.21.0'
     PYODIDE_SERVE_LOCALLY = 1
+
+    # Note: During development, Pyodide should ordinarily be served locally.
+    # We also need a local copy for building the OCA docker image.
+    # A local copy can be obtained by the `pfsc get pyodide` command.
+    # As for wheels, local copies can be obtained by the `pfsc get wheels` command.]
+    # They are saved in `PFSC_ROOT/src/whl`.
+    #
+    # During development you may also need to rebuild one or more wheels from local
+    # repos. In this case, just use the `pfsc make whl` command for the project or
+    # projects you're working on, e.g. `pfsc make whl sympy`. This will not only
+    # rebuild the wheel, but will also copy it into the `whl` dir. You may then
+    # also need to rerun `pfsc deploy generate`, which always looks for the latest
+    # version of each wheel, and bind mounts this into the approp. docker container.
 
     # Some config vars commonly used during development are listed below.
     # For the list of all vars, see `pfsc-server/config.py`.

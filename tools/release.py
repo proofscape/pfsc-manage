@@ -26,7 +26,7 @@ import conf
 from manage import cli, PFSC_ROOT, PFSC_MANAGE_ROOT
 import tools.build
 from tools.util import (
-    set_supporting_software_versions_for_server_in_conf,
+    get_version_numbers,
     get_server_version,
 )
 
@@ -58,7 +58,8 @@ def oca(seq_num, skip_check, dump, dry_run):
 
     The tag is generated from the current version number of pfsc-ise, the
     current version number of pfsc-server, and any sequence number you may
-    supply.
+    supply. The "current" versions are those currently checked out in the
+    repos in the `src` directory.
 
     Unless you say to skip it, there will be a prompt to check if the tag is
     correct.
@@ -71,25 +72,27 @@ def oca(seq_num, skip_check, dump, dry_run):
     # This ensures the pfsc-ise and pfsc-server repos exist:
     tools.build.oca_readiness_checks(release=True)
 
-    with open(os.path.join(SRC_ROOT, 'pfsc-ise', 'package.json')) as f:
+    versions = get_version_numbers()
+
+    with open(os.path.join(SRC_ROOT, 'pfsc-pdf', 'package.json')) as f:
         d = json.load(f)
-    ise_vers = d["version"]
+        pdf_checked_out_vers = d["version"]
 
+    if pdf_checked_out_vers != versions['pfsc-pdf']:
+        raise click.UsageError(
+            'Version of pfsc-pdf checked out under `src` does not match'
+            ' version named by pfsc-ise.'
+        )
+
+    ise_vers = versions['pfsc-ise']
     server_vers = get_server_version()
-
     seq_num_suffix = f'-{seq_num}' if seq_num > 0 else ''
-
     oca_tag = f'{ise_vers}-{server_vers}{seq_num_suffix}'
 
-    set_supporting_software_versions_for_server_in_conf()
     print('Building with versions:')
     print(f'  server: {server_vers}')
     print(f'  ise: {ise_vers}')
-    print(f'  elkjs: {conf.CommonVars.ELKJS_VERSION}')
-    print(f'  mathjax: {conf.CommonVars.MATHJAX_VERSION}')
-    print(f'  pdfjs: {conf.CommonVars.PDFJS_VERSION}')
-    print(f'  pyodide: {conf.CommonVars.PYODIDE_VERSION}')
-    print(f'  pfsc-examp: {conf.PFSC_EXAMP_VERSION}')
+    print('If any of the above is incorrect, use `git checkout` in the repo in the `src` dir.')
     print()
 
     if skip_check:
