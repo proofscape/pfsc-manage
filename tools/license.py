@@ -103,7 +103,15 @@ def show(project, image):
         raise Exception('unknown language')
 
 
-@license.command()
+# DEPRECATED
+#  The pfsc-ise and pbe projects now use custom loaders to build their About
+#  dialogs at build time, using Webpack.
+#  Therefore this command is no longer needed.
+#  However, we do still need to build the combined license file for the OCA
+#  image, which includes JS packages. Therefore in this license.py module we
+#  retain all the infrastructure for building JS package info.
+#  This function itself can probably be removed, but we keep it for now.
+#@license.command()
 @click.argument('project')
 @click.option('--dry-run', is_flag=True, help="Do not write anything; just print what would be written.")
 def about(project, dry_run):

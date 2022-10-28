@@ -16,55 +16,25 @@
 #   limitations under the License.                                            #
 # --------------------------------------------------------------------------- #
 
-{% if nginx %}
-
-RUN rm /etc/nginx/sites-enabled/default
-COPY {{tmp_dir_name}}/nginx.conf /etc/nginx/sites-enabled/pfsc
-
-RUN ln -s /proofscape/PDFLibrary /usr/share/nginx/PDFLibrary \
- && mkdir -p /usr/share/nginx/pyodide/{{pyodide_version_dir_name}} \
- && mkdir /usr/share/nginx/whl \
- && mkdir /usr/share/nginx/ise \
- && mkdir /usr/share/nginx/dojo \
- && mkdir /usr/share/nginx/mathjax \
- && mkdir /usr/share/nginx/elk
-
-{% for filename in pyodide_files %}
-COPY pyodide/{{pyodide_version_dir_name}}/{{filename}} /usr/share/nginx/pyodide/{{pyodide_version_dir_name}}/
-{% endfor %}
-
-{% for whl_filename in wheels %}
-COPY whl/{{whl_filename}} /usr/share/nginx/whl/
-{% endfor %}
-
-COPY pfsc-ise/dist/ise /usr/share/nginx/ise/{{ise_version_dir_name}}
-COPY pfsc-ise/dist/dojo /usr/share/nginx/dojo
-COPY pfsc-ise/dist/mathjax /usr/share/nginx/mathjax/{{mathjax_version_dir_name}}
-COPY pfsc-ise/dist/elk /usr/share/nginx/elk/{{elk_version_dir_name}}
-
-COPY pfsc-pdf/build/generic /usr/share/nginx/pdfjs/{{pdfjs_version_dir_name}}
-
-{% else %}
-
 WORKDIR /home/pfsc/proofscape/src/pfsc-server/static
 RUN ln -s /proofscape/PDFLibrary \
- && mkdir -p pyodide/{{pyodide_version_dir_name}} \
- && mkdir whl \
- && mkdir -p {ise,dojo,mathjax,elk}
+ && mkdir -p pyodide/v{{versions["pyodide"]}} \
+ && mkdir v{{server_vers}} \
+ && mv css v{{server_vers}}/ \
+ && mv img v{{server_vers}}/ \
+ && bash -c "mkdir -p {whl,ise,dojo,mathjax,elk}"
 
 {% for filename in pyodide_files %}
-COPY pyodide/{{pyodide_version_dir_name}}/{{filename}} ./pyodide/{{pyodide_version_dir_name}}/
+COPY pyodide/v{{versions["pyodide"]}}/{{filename}} ./pyodide/v{{versions["pyodide"]}}/
 {% endfor %}
 
 {% for whl_filename in wheels %}
 COPY whl/{{whl_filename}} ./whl/
 {% endfor %}
 
-COPY pfsc-ise/dist/ise ./ise/{{ise_version_dir_name}}
+COPY pfsc-ise/dist/ise ./ise/v{{versions["pfsc-ise"]}}
 COPY pfsc-ise/dist/dojo ./dojo
-COPY pfsc-ise/dist/mathjax ./mathjax/{{mathjax_version_dir_name}}
-COPY pfsc-ise/dist/elk ./elk/{{elk_version_dir_name}}
+COPY pfsc-ise/dist/mathjax ./mathjax/v{{versions["mathjax"]}}
+COPY pfsc-ise/dist/elk ./elk/v{{versions["elkjs"]}}
 
-COPY pfsc-pdf/build/generic ./pdfjs/{{pdfjs_version_dir_name}}
-
-{% endif %}
+COPY pfsc-pdf/build/generic ./pdfjs/v{{versions["pfsc-pdf"]}}

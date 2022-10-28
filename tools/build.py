@@ -27,6 +27,7 @@ import conf
 from manage import cli, PFSC_ROOT, PFSC_MANAGE_ROOT
 from conf import DOCKER_CMD
 import tools.license
+from tools.util import get_version_numbers
 
 SRC_ROOT = os.path.join(PFSC_ROOT, 'src')
 SRC_TMP_ROOT = os.path.join(SRC_ROOT, 'tmp')
@@ -115,9 +116,12 @@ def oca_readiness_checks(release=False):
     #if not os.path.exists(demo_path):
     #    raise click.UsageError(f'Could not find {demo_path}. Have you cloned it?')
 
-    pyodide_path = os.path.join(SRC_ROOT, 'pyodide', f'v{conf.CommonVars.PYODIDE_VERSION}')
+    versions = get_version_numbers()
+
+    pyodide_version = versions["pyodide"]
+    pyodide_path = os.path.join(SRC_ROOT, 'pyodide', f'v{pyodide_version}')
     if not os.path.exists(pyodide_path):
-        raise click.UsageError(f'Could not find pyodide at version {conf.CommonVars.PYODIDE_VERSION}')
+        raise click.UsageError(f'Could not find pyodide at expected version {pyodide_version}')
 
     whl_path = os.path.join(SRC_ROOT, 'whl')
     if release:
@@ -125,6 +129,9 @@ def oca_readiness_checks(release=False):
     if not os.path.exists(whl_path):
         advice = f'pfsc get wheels{" --release" if release else ""}'
         raise click.UsageError(f'Could not find wheels. Did you run `{advice}`?')
+    pfsc_examp_version = versions['pfsc-examp']
+    if not os.path.exists(os.path.join(whl_path, f'pfsc_examp-{pfsc_examp_version}-py3-none-any.whl')):
+        raise click.UsageError(f'Did not find wheel for expected version {pfsc_examp_version} of pfsc-examp.')
 
 
 @build.command()

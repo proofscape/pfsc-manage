@@ -23,7 +23,7 @@ import click
 
 import conf
 from manage import cli, PFSC_ROOT
-from tools.util import do_commands_in_directory
+from tools.util import do_commands_in_directory, get_version_numbers
 
 SRC_DIR = os.path.join(PFSC_ROOT, 'src')
 
@@ -45,7 +45,8 @@ def pyodide(version, dry_run):
     """
     p_path = pathlib.Path(PFSC_ROOT) / 'src' / 'pyodide'
 
-    version = version or conf.CommonVars.PYODIDE_VERSION
+    versions = get_version_numbers()
+    version = version or versions['pyodide']
     v_path = p_path / f'v{version}'
     if v_path.exists():
         raise click.UsageError(f'{v_path} already exists!')
@@ -74,7 +75,8 @@ def wheels(version, release, dry_run):
     """
     Download all the whl files needed for the current version of pfsc-examp.
     """
-    version = version or conf.PFSC_EXAMP_VERSION
+    versions = get_version_numbers()
+    version = version or versions['pfsc-examp']
     path = pathlib.Path(PFSC_ROOT) / 'src' / 'whl'
     if release:
         path /= 'release'

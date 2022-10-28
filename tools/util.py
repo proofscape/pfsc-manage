@@ -17,6 +17,7 @@
 # --------------------------------------------------------------------------- #
 
 import os
+import json
 import re
 import pathlib
 from configparser import ConfigParser
@@ -122,30 +123,33 @@ def do_commands_in_directory(cmds, path, dry_run=True, quiet=False):
             os.system(full_cmd)
 
 
-def get_supporting_software_versions_for_server():
-    p = pathlib.Path(PFSC_ROOT) / 'src' / 'pfsc-server' / 'pfsc.ini'
-    cp = ConfigParser()
-    cp.read(p)
-    versions = {
-        name: cp.get('versions', name)
-        for name in ['ise', 'elkjs', 'mathjax', 'pyodide', 'examp', 'pdf']
+def get_version_numbers():
+    """
+    Read package.json, package-lock.json, and other-versions.json in the
+    pfsc-ise project, in order to determine the version numbers for the
+    projects:
+        pfsc-ise
+        mathjax
+        elkjs
+        pfsc-pdf
+        pyodide
+        pfsc-examp
+    """
+    ise_path = pathlib.Path(PFSC_ROOT) / 'src' / 'pfsc-ise'
+    with open(ise_path / 'package.json') as f:
+        pj = json.load(f)
+    with open(ise_path / 'package-lock.json') as f:
+        plj = json.load(f)
+    with open(ise_path / 'other-versions.json') as f:
+        ovj = json.load(f)
+    return {
+        'pfsc-ise': pj['version'],
+        'mathjax': plj["dependencies"]["mathjax"]["version"],
+        'elkjs': plj["dependencies"]["elkjs"]["version"],
+        'pfsc-pdf': ovj['pfsc-pdf'],
+        'pyodide': ovj['pyodide'],
+        'pfsc-examp': ovj['pfsc-examp'],
     }
-    return versions
-
-
-def set_supporting_software_versions_for_server_in_conf():
-    """
-    Ensure we are using the default versions of all supporting software,
-    whatever we may have set in our current conf.py.
-    This is important in release builds.
-    """
-    versions = get_supporting_software_versions_for_server()
-    pfsc_conf.CommonVars.ISE_VERSION = versions['ise']
-    pfsc_conf.CommonVars.ELKJS_VERSION = versions['elkjs']
-    pfsc_conf.CommonVars.MATHJAX_VERSION = versions['mathjax']
-    pfsc_conf.CommonVars.PYODIDE_VERSION = versions['pyodide']
-    pfsc_conf.CommonVars.PDFJS_VERSION = versions['pdf']
-    pfsc_conf.PFSC_EXAMP_VERSION = versions['examp']
 
 
 def get_server_version():

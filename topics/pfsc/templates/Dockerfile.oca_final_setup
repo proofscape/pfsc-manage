@@ -32,11 +32,6 @@ RUN echo "loadmodule /usr/lib/redis/modules/redisgraph.so" >> redis.conf \
  && echo "save 1 1" >> redis.conf
 
 ENV ISE_VERSION {{ise_version}}
-ENV ELKJS_VERSION {{elkjs_version}}
-ENV MATHJAX_VERSION {{mathjax_version}}
-ENV PDFJS_VERSION {{pdfjs_version}}
-ENV PYODIDE_VERSION {{pyodide_version}}
-ENV LOCAL_WHL_FILENAMES {{wheel_filenames}}
 # Use the One-Container App config:
 ENV FLASK_CONFIG OCA
 # Set to accept user config from PFSC_ROOT/deploy/pfsc.conf:
