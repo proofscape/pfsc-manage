@@ -1,3 +1,18 @@
+## 0.25.0 (221028)
+
+Breaking Changes:
+
+* In a move to no longer repeat ourselves with JS version numbers, we load JS
+  assets in new ways ([#1](https://github.com/proofscape/pfsc-manage/pull/1)).
+
+* The `pfsc license about` command is commented out. This is no longer needed,
+  as the `pfsc-ise` and `pbe` projects now generate their own "About" dialogs.
+
+Requires:
+
+* `pfsc-server >= 0.25.0`
+* `pfsc-ise >= 25.0`
+
 ## 0.24.0 (221016)
 
 Features:
