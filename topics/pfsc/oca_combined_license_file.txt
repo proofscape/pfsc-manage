@@ -45,7 +45,7 @@ pfsc-ise                                                Apache 2.0
 
     Computer algebra and symbolic manipulation provided by:
 
-
+sympy                                                   BSD-3-Clause
 
     The SymPy project is at:
     https://github.com/sympy/sympy

@@ -45,7 +45,7 @@ sections that follow.
 
     Computer algebra and symbolic manipulation provided by:
 
-{{credits['displaylang-sympy']}}
+{{credits['sympy']}}
 
     The SymPy project is at:
     https://github.com/sympy/sympy

@@ -197,7 +197,9 @@ def oca(release, dump, dry_run, tag):
             # Step 2
             license_file_text = tools.license.oca.callback(f'pise:{step_1_tag}')
             # Update the copy under version control (which exists so there is
-            # a linkable copy on the web):
+            # a linkable copy on the web). Note that, since we currently are not
+            # writing version numbers into this file, it will often be unchanged
+            # after a new build.
             vc_clf = os.path.join(PFSC_MANAGE_ROOT, 'topics', 'pfsc', 'oca_combined_license_file.txt')
             with open(vc_clf, 'w') as f:
                 f.write(license_file_text)
