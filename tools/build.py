@@ -20,6 +20,8 @@ import subprocess
 import tempfile
 import os
 import re
+import pathlib
+import sys
 
 import click
 
@@ -59,14 +61,78 @@ def strip_headers(text):
 
 
 def finalize(df, image_name, tag, dump, dry_run):
+    """
+    Finish a build process by actually carrying out the `docker build` command.
+
+    df: the text of the Dockerfile
+    image_name: the name for the image
+    tag: the tag for the image
+    dump: boolean, whether you want to dump the Dockerfile contents to stdout
+    dry_run: boolean, whether to actually do anything
+    """
     df = strip_headers(df)
     if dump:
         dump_text_with_title(df, 'Dockerfile')
-    cmd = f'{DOCKER_CMD} build -f- -t {image_name}:{tag} {SRC_ROOT}'
-    print(cmd)
-    if not dry_run:
-        args = cmd.split()
-        subprocess.run(args, input=df, text=True)
+
+    # We build a temporary context for the build, using symlinks and
+    # the tar trick to dereference the links and pass everything to Docker.
+    # This is what allows source repos to live anywhere in your filessytem,
+    # and simply be symlinked from PFSC_ROOT/src. It also makes builds much
+    # faster on Ubuntu nodes, since the context is much smaller.
+    with tempfile.TemporaryDirectory(dir=SRC_TMP_ROOT) as context_dir:
+        # Get an alphabetical list without repeats, of the resources that
+        # are copied into the image with the COPY command.
+        copied = list(sorted({
+            line.split()[1] for line in df.split('\n')
+            if line.startswith("COPY")
+            and not line.startswith("COPY --from")
+        }))
+
+        # Make a symlink for each desired resource.
+        src_dir = pathlib.Path(SRC_ROOT)
+        for resource in copied:
+            res_path = pathlib.Path(resource)
+            dirs = res_path.parts[:-1]
+            c = pathlib.Path(context_dir)
+            skip = False
+            for d in dirs:
+                c /= d
+                if not c.exists():
+                    c.mkdir()
+                elif c.is_symlink():
+                    # Because the resource paths are sorted alphabetically,
+                    # and there are no repeats, it's okay if one is a prefix
+                    # of another. We just skip the longer one entirely.
+                    skip = True
+                    break
+            if not skip:
+                r = src_dir / res_path
+                cmd = f'ln -s {r} {c}'
+                os.system(cmd)
+
+        with open(pathlib.Path(context_dir) / 'Dockerfile', 'w') as f:
+            f.write(df)
+
+        ignore_file_path = src_dir / '.dockerignore'
+        if ignore_file_path.exists():
+            cmd = f'ln -s {ignore_file_path} {context_dir}'
+            os.system(cmd)
+
+        """
+        On macOS, I found that if you gzip the tarfile (bzip produces similar
+        error), you get:
+                    
+            failed to solve with frontend dockerfile.v0: failed to read dockerfile: Error processing tar file(gzip: invalid header):
+        
+        so we gzip iff the platform is NOT darwin.
+        """
+        do_zip = (sys.platform != 'darwin')
+        zip = 'z' if do_zip else ''
+        cmd = f'cd {context_dir}; tar -c{zip}h . | {DOCKER_CMD} build -t {image_name}:{tag} -'
+
+        print(cmd)
+        if not dry_run:
+            os.system(cmd)
 
 
 PYC_DOCKERIGNORE = """\

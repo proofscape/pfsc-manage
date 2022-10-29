@@ -1,3 +1,13 @@
+## 0.25.1 (------)
+
+Features:
+
+* Now use `tar` with symlink dereferencing to construct `docker build`
+  contexts. This means that (a) source repos can live anywhere, as long as
+  there is a symlink in `PFSC_ROOT/src` pointing to them, and (b) builds are
+  much faster on Ubuntu nodes.
+
+
 ## 0.25.0 (221028)
 
 Breaking Changes:
