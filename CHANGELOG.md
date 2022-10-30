@@ -1,11 +1,15 @@
 ## 0.25.1 (------)
 
-Features:
+Enhancements:
 
 * Now use `tar` with symlink dereferencing to construct `docker build`
   contexts. This means that (a) source repos can live anywhere, as long as
   there is a symlink in `PFSC_ROOT/src` pointing to them, and (b) builds are
   much faster on Ubuntu nodes.
+
+* Replace `ISE_VERSION` config var with `REMOTE_ISE_VERSION`. The new var only
+  has to be set if you want to load the ISE bundle remotely *and* want it at
+  a version other than that checked out in the neighboring `pfsc-ise` repo.
 
 
 ## 0.25.0 (221028)

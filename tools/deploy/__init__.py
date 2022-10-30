@@ -32,7 +32,7 @@ from tools.deploy.services import GdbCode
 from tools import simple_yaml
 from tools.util import (
     simple_timestamp, trymakedirs, check_app_url_prefix,
-    resolve_fs_path,
+    resolve_fs_path, get_version_numbers
 )
 from topics.nginx import write_nginx_conf, write_maintenance_nginx_conf
 import conf as pfsc_conf
@@ -415,8 +415,19 @@ def dict_to_dot_env(d):
     return '\n'.join(lines) + '\n'
 
 
+def get_ise_vers_num():
+    versions = get_version_numbers()
+    checked_out_vers = versions['pfsc-ise']
+    if conf.CommonVars.ISE_SERVE_LOCALLY:
+        return checked_out_vers
+    elif conf.REMOTE_ISE_VERSION is not None:
+        return conf.REMOTE_ISE_VERSION
+    return checked_out_vers
+
+
 def write_local_dot_env(app_url_prefix, gdb, demos, secret=None):
     d = {
+        "ISE_VERSION": get_ise_vers_num(),
         "SECRET_KEY": secret or secrets.token_urlsafe(32),
         "PFSC_LIB_ROOT": f'{PFSC_ROOT}/lib',
         "PFSC_BUILD_ROOT": f'{PFSC_ROOT}/build',
@@ -444,8 +455,10 @@ def write_local_dot_env(app_url_prefix, gdb, demos, secret=None):
 
     return dict_to_dot_env(d)
 
+
 def write_docker_dot_env(app_url_prefix, gdb, demos, secret=None):
     d = {
+        "ISE_VERSION": get_ise_vers_num(),
         "SECRET_KEY": secret or secrets.token_urlsafe(32),
     }
 
