@@ -78,10 +78,11 @@ def oca(seq_num, skip_check, dump, dry_run):
         d = json.load(f)
         pdf_checked_out_vers = d["version"]
 
-    if pdf_checked_out_vers != versions['pfsc-pdf']:
+    pfsc_pdf_vers = versions['pfsc-pdf']
+    if pdf_checked_out_vers != pfsc_pdf_vers:
         raise click.UsageError(
-            'Version of pfsc-pdf checked out under `src` does not match'
-            ' version named by pfsc-ise.'
+            f'Version of pfsc-pdf checked out under `src` ({pdf_checked_out_vers}) does not match'
+            f' version ({pfsc_pdf_vers}) named by pfsc-ise.'
         )
 
     ise_vers = versions['pfsc-ise']
