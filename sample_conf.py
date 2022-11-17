@@ -141,6 +141,16 @@ TINKERGRAPH_PORT = 8182
 JANUSGRAPH_HOST = LOCAL_ONLY
 JANUSGRAPH_PORT = 8183
 
+# Selenium testing
+#
+# The PISE_URL need not contain the special string <MCA_PORT>, but if it does
+# this will be replaced by the PFSC_ISE_MCA_PORT value configured above.
+SEL_PISE_URL = "http://localhost:<MCA_PORT>"
+# Legal browsers are: "CHROME" and "FIREFOX"
+SEL_BROWSER = "FIREFOX"
+# Boolean:
+SEL_HEADLESS = True
+
 # Docker Image Tags
 #
 # These are the default docker image tags that will be used, for various services:
