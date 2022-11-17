@@ -52,21 +52,7 @@ class Test_Login_as_test_hist():
     self.driver.get(pise_url)
     self.driver.set_window_size(1920, 1057)
     dismiss_cookie_notice(self.driver)
-    # User menu
-    self.driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").click()
-    self.vars["window_handles"] = self.driver.window_handles
-    # Log in option
-    self.driver.find_element(By.ID, "dijit_MenuItem_25_text").click()
-    self.vars["win3677"] = self.wait_for_window(2000)
-    self.vars["root"] = self.driver.current_window_handle
-    # In pop-up window, log in as test.hist
-    self.driver.switch_to.window(self.vars["win3677"])
-    self.driver.find_element(By.NAME, "username").click()
-    self.driver.find_element(By.NAME, "username").send_keys("hist")
-    self.driver.find_element(By.NAME, "password").send_keys("hist")
-    self.driver.find_element(By.CSS_SELECTOR, "p > input").click()
-    self.driver.close()
-    self.driver.switch_to.window(self.vars["root"])
+    login_as_test_user(self.driver, 'hist')
     # We're logged in if our username replaces the text on the user menu
     WebDriverWait(self.driver, 30).until(expected_conditions.text_to_be_present_in_element((By.ID, "dijit_PopupMenuBarItem_8_text"), "test.hist"))
     assert self.driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").text == "test.hist"
