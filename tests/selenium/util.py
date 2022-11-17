@@ -74,10 +74,10 @@ def login_as_test_user(driver, user, window_timeout=2000):
     v["window_handles"] = driver.window_handles
     # Click the "Log in" option
     driver.find_element(By.ID, "dijit_MenuItem_25_text").click()
-    v["win3677"] = wait_for_window(window_timeout)
+    v["popup"] = wait_for_window(window_timeout)
     v["root"] = driver.current_window_handle
     # In pop-up window, log in as the desired test user
-    driver.switch_to.window(v["win3677"])
+    driver.switch_to.window(v["popup"])
     driver.find_element(By.NAME, "username").click()
     driver.find_element(By.NAME, "username").send_keys(user)
     driver.find_element(By.NAME, "password").send_keys(user)
