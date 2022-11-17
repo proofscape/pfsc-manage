@@ -29,30 +29,30 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from tests.selenium.util import (
-  make_driver, dismiss_cookie_notice, login_as_test_user,
+    make_driver, dismiss_cookie_notice, login_as_test_user,
 )
 
 
 class Test_Login_as_test_hist():
-  def setup_method(self, method):
-    self.driver = make_driver()
-    self.vars = {}
+    def setup_method(self, method):
+        self.driver = make_driver()
+        self.vars = {}
 
-  def teardown_method(self, method):
-    self.driver.quit()
+    def teardown_method(self, method):
+        self.driver.quit()
 
-  def wait_for_window(self, timeout=2):
-    time.sleep(round(timeout / 1000))
-    wh_now = self.driver.window_handles
-    wh_then = self.vars["window_handles"]
-    if len(wh_now) > len(wh_then):
-      return set(wh_now).difference(set(wh_then)).pop()
+    def wait_for_window(self, timeout=2):
+        time.sleep(round(timeout / 1000))
+        wh_now = self.driver.window_handles
+        wh_then = self.vars["window_handles"]
+        if len(wh_now) > len(wh_then):
+            return set(wh_now).difference(set(wh_then)).pop()
 
-  def test_login_as_test_hist(self, pise_url):
-    self.driver.get(pise_url)
-    self.driver.set_window_size(1920, 1057)
-    dismiss_cookie_notice(self.driver)
-    login_as_test_user(self.driver, 'hist')
-    # We're logged in if our username replaces the text on the user menu
-    WebDriverWait(self.driver, 30).until(expected_conditions.text_to_be_present_in_element((By.ID, "dijit_PopupMenuBarItem_8_text"), "test.hist"))
-    assert self.driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").text == "test.hist"
+    def test_login_as_test_hist(self, pise_url):
+        self.driver.get(pise_url)
+        self.driver.set_window_size(1920, 1057)
+        dismiss_cookie_notice(self.driver)
+        login_as_test_user(self.driver, 'hist')
+        # We're logged in if our username replaces the text on the user menu
+        WebDriverWait(self.driver, 30).until(expected_conditions.text_to_be_present_in_element((By.ID, "dijit_PopupMenuBarItem_8_text"), "test.hist"))
+        assert self.driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").text == "test.hist"
