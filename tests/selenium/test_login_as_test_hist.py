@@ -36,13 +36,6 @@ class Test_Login_as_test_hist():
     def teardown_method(self, method):
         self.driver.quit()
 
-    def wait_for_window(self, timeout=2):
-        time.sleep(round(timeout / 1000))
-        wh_now = self.driver.window_handles
-        wh_then = self.vars["window_handles"]
-        if len(wh_now) > len(wh_then):
-            return set(wh_now).difference(set(wh_then)).pop()
-
     def test_login_as_test_hist(self, pise_url):
         self.driver.get(pise_url)
         self.driver.set_window_size(1920, 1057)
