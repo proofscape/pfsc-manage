@@ -84,3 +84,12 @@ def login_as_test_user(driver, user, window_timeout=2000):
     driver.find_element(By.CSS_SELECTOR, "p > input").click()
     driver.close()
     driver.switch_to.window(v["root"])
+
+
+def open_repo(driver, repopath):
+    """
+    Open a content repo.
+    """
+    driver.find_element(By.ID, "repoInputText").click()
+    driver.find_element(By.ID, "repoInputText").send_keys(repopath)
+    driver.find_element(By.ID, "repoInputButton").click()
