@@ -28,6 +28,8 @@ from tests.selenium.util import (
 
 
 class Test_Login_as_test_hist():
+    """Log in as a test user."""
+
     def setup_method(self, method):
         self.driver = make_driver()
         self.vars = {}
@@ -40,6 +42,7 @@ class Test_Login_as_test_hist():
         self.driver.set_window_size(1920, 1057)
         dismiss_cookie_notice(self.driver)
         login_as_test_user(self.driver, 'hist')
+
         # We're logged in if our username replaces the text on the user menu
         WebDriverWait(self.driver, 3).until(expected_conditions.text_to_be_present_in_element((By.ID, "dijit_PopupMenuBarItem_8_text"), "test.hist"))
         assert self.driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").text == "test.hist"
