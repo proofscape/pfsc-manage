@@ -25,11 +25,11 @@ from tests.selenium.util import Tester
 class TestBasicRun01(Tester):
     """Log in as test.hist, and load the test.hist.lit repo @WIP."""
 
-    def test_basic_run_01(self, caplog, pise_url):
-        #logging.basicConfig(filename='basic_run_01.log', level=logging.INFO)
-        #logging.basicConfig(level=logging.INFO)
-        caplog.set_level(logging.INFO)
-        #caplog.set_level(logging.DEBUG)
+    def test_basic_run_01(self, caplog, pise_url, selenium_logging_level):
+        logger = logging.getLogger(__name__)
+        self.logger_name = __name__
+        # https://docs.pytest.org/en/6.2.x/logging.html#caplog-fixture
+        caplog.set_level(selenium_logging_level, logger=__name__)
 
         self.load_page(pise_url)
         self.dismiss_cookie_notice()
@@ -47,33 +47,32 @@ class TestBasicRun01(Tester):
 
         # Open context menu and click "build recursive" option.
         self.right_click(s_repo_root_node)
-        #build_rec_option = self.wait_for_element_visible(s_build_rec_option)
         build_rec_option = self.wait_for_element_with_text(
             "#dijit_Menu_1 > tbody > tr:nth-child(7) > td:nth-child(2)",
             "Build Recursive"
         )
         build_rec_option.click()
         t0 = time.time()
-        logging.info("Starting build...")
+        logger.info("Starting build...")
 
         # Watch the feedback monitor, and sample the width of the progress bar.
         self.wait_for_element_visible(s_feedback_area)
-        logging.info("Feedback monitor is visible.")
-        logging.info("Sampling prog bar width for 3 seconds...")
+        logger.info("Feedback monitor is visible.")
+        logger.info("Sampling prog bar width for 3 seconds...")
         widths = set()
         for i in range(30):
             w_str = prog_bar.value_of_css_property('width')
             w_flt = float(w_str.replace('px', ''))
-            logging.debug(f'Prog bar width: {w_flt:.2f}')
+            logger.debug(f'Prog bar width: {w_flt:.2f}')
             widths.add(w_flt)
             time.sleep(0.1)
         # Probably got 20 or more different values,
         # but we'll just look for two distinct non-zero values.
         n = len(widths - {0})
-        logging.info(f"Got {n} different nonzero prog bar widths.")
+        logger.info(f"Got {n} different nonzero prog bar widths.")
         assert n >= 2
 
         # Feedback monitor should be hidden after build completes.
         self.wait_for_element_invisible(s_feedback_area, wait=30)
         dt = time.time() - t0
-        logging.info(f'Feedback monitor hidden. Build took {dt:.2f}s.')
+        logger.info(f'Feedback monitor hidden. Build took {dt:.2f}s.')

@@ -62,22 +62,24 @@ def load_page(driver, url):
     driver.set_window_size(pfsc_conf.SEL_WINDOW_WIDTH, pfsc_conf.SEL_WINDOW_HEIGHT)
 
 
-def dismiss_cookie_notice(driver):
+def dismiss_cookie_notice(driver, logger_name='root'):
     """
     Dismiss the cookie notice, if any.
     """
+    logger = logging.getLogger(logger_name)
     button = driver.find_element(By.CSS_SELECTOR, "body > div.noticeBox > div.buttonRow > button")
     if button:
         button.click()
-        logging.info("Dismissed cookie notice")
+        logger.info("Dismissed cookie notice")
     else:
-        logging.info("Found no cookie notice")
+        logger.info("Found no cookie notice")
 
 
-def login_as_test_user(driver, user, wait=BASIC_WAIT):
+def login_as_test_user(driver, user, wait=BASIC_WAIT, logger_name='root'):
     """
     Log in as a test.user
     """
+    logger = logging.getLogger(logger_name)
     v = {}
     
     def wait_for_window(wait=BASIC_WAIT):
@@ -86,7 +88,7 @@ def login_as_test_user(driver, user, wait=BASIC_WAIT):
         wh_then = v["window_handles"]
         if len(wh_now) > len(wh_then):
             return set(wh_now).difference(set(wh_then)).pop()
-    logging.info("Logging in...")
+    logger.info("Logging in...")
     # Click the user menu
     driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").click()
     v["window_handles"] = driver.window_handles
@@ -105,7 +107,7 @@ def login_as_test_user(driver, user, wait=BASIC_WAIT):
     # User menu text should now say our username
     WebDriverWait(driver, wait).until(expected_conditions.text_to_be_present_in_element((By.ID, "dijit_PopupMenuBarItem_8_text"), f"test.{user}"))
     assert driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").text == f"test.{user}"
-    logging.info(f"Logged in as test.{user}")
+    logger.info(f"Logged in as test.{user}")
 
 
 def wait_for_element(driver, selector, wait=BASIC_WAIT):
@@ -131,7 +133,7 @@ def inner_html(element):
     return element.get_attribute('innerHTML')
 
 
-def open_repo(driver, repopath, selector, wait=BASIC_WAIT, select_tab=None):
+def open_repo(driver, repopath, selector, wait=BASIC_WAIT, select_tab=None, logger_name='root'):
     """
     Open a content repo.
 
@@ -139,7 +141,8 @@ def open_repo(driver, repopath, selector, wait=BASIC_WAIT, select_tab=None):
         the repo loads
     wait: max seconds to wait for repo to load
     """
-    logging.info(f"Opening repo {repopath}...")
+    logger = logging.getLogger(logger_name)
+    logger.info(f"Opening repo {repopath}...")
     driver.find_element(By.ID, "repoInputText").click()
     driver.find_element(By.ID, "repoInputText").send_keys(repopath)
     driver.find_element(By.ID, "repoInputButton").click()
@@ -154,11 +157,10 @@ def open_repo(driver, repopath, selector, wait=BASIC_WAIT, select_tab=None):
     root_node = wait_for_element(driver, selector, wait=wait)
     # Strangely, for this element it's not the inner text, but inner HTML that
     # is equal to the repopath.
-    #print("=" * 80)
-    #print('text', root_node.text)
-    #print('html', root_node.get_attribute('innerHTML'))
+    #logger.debug(f'repo root node text: {root_node.text}')
+    #logger.debug(f'repo root node html: {root_node.get_attribute("innerHTML")}')
     assert inner_html(root_node) == repopath
-    logging.info(f"Opened repo {repopath}.")
+    logger.info(f"Opened repo {repopath}.")
 
 
 def click(driver, selector, button='l'):
@@ -188,6 +190,7 @@ class Tester:
 
     def setup_method(self, method):
         self.driver = make_driver()
+        self.logger_name = 'root'
 
     def teardown_method(self, method):
         if pfsc_conf.SEL_HEADLESS or not pfsc_conf.SEL_STAY_OPEN:
@@ -200,13 +203,13 @@ class Tester:
         return self.driver.find_element(By.CSS_SELECTOR, selector)
 
     def dismiss_cookie_notice(self):
-        return dismiss_cookie_notice(self.driver)
+        return dismiss_cookie_notice(self.driver, logger_name=self.logger_name)
 
     def login_as_test_user(self, user, wait=BASIC_WAIT):
-        return login_as_test_user(self.driver, user, wait=wait)
+        return login_as_test_user(self.driver, user, wait=wait, logger_name=self.logger_name)
 
     def open_repo(self, repopath, selector, wait=BASIC_WAIT, select_tab=None):
-        return open_repo(self.driver, repopath, selector, wait=wait, select_tab=select_tab)
+        return open_repo(self.driver, repopath, selector, wait=wait, select_tab=select_tab, logger_name=self.logger_name)
 
     def click(self, selector, button='l'):
         return click(self.driver, selector, button=button)

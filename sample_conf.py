@@ -148,10 +148,12 @@ JANUSGRAPH_PORT = 8183
 SEL_PISE_URL = "http://localhost:<MCA_PORT>"
 # Legal browsers are: "CHROME" and "FIREFOX"
 SEL_BROWSER = "CHROME"
+# Log level:
+SEL_LOG_LEVEL = "INFO"
 # Basic timeout (seconds):
 SEL_BASIC_WAIT = 3
 # Run browser headless?
-SEL_HEADLESS = False
+SEL_HEADLESS = True
 # If not headless, keep browser open after test runs?
 SEL_STAY_OPEN = False
 # Window size

@@ -17,6 +17,7 @@
 # --------------------------------------------------------------------------- #
 
 import pytest
+import logging
 
 import conf as pfsc_conf
 from tests.selenium.util import make_driver
@@ -32,3 +33,8 @@ def pise_url():
 @pytest.fixture
 def driver():
     return make_driver()
+
+
+@pytest.fixture
+def selenium_logging_level():
+    return getattr(logging, pfsc_conf.SEL_LOG_LEVEL)
