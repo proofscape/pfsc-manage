@@ -46,12 +46,7 @@ class TestBasicRun01(Tester):
         prog_bar = self.find_element(s_prog_bar)
 
         # Open context menu and click "build recursive" option.
-        self.right_click(s_repo_root_node)
-        build_rec_option = self.wait_for_element_with_text(
-            "#dijit_Menu_1 > tbody > tr:nth-child(7) > td:nth-child(2)",
-            "Build Recursive"
-        )
-        build_rec_option.click()
+        self.click_nth_context_menu_option(s_repo_root_node, "dijit_Menu_1", 7, "Build Recursive")
         t0 = time.time()
         logger.info("Starting build...")
 

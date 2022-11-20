@@ -186,6 +186,29 @@ def right_click(driver, selector):
     return click(driver, selector, button='r')
 
 
+def click_nth_context_menu_option(driver, elt_sel, menu_table_id, n, label, logger_name='root'):
+    """
+    Find an element of a given selector, right-click it, then (left-)click
+    the nth option on the context menu.
+
+    elt_sel: CSS selector for the element to be right-clicked
+    menu_table_id: id of the <table> element of the context menu
+    n: you want the nth item on the menu. Remember to count separators!
+    label: the text that should appear as the label of the desired menu option
+    """
+    logger = logging.getLogger(logger_name)
+    logger.info(f'Right-clicking {elt_sel}...')
+    right_click(driver, elt_sel)
+    menu_option = wait_for_element_with_text(
+        driver,
+        f"#{menu_table_id} > tbody > tr:nth-child({n}) > td:nth-child(2)",
+        label
+    )
+    logger.info(f'Got context menu with item {n} saying "{label}"')
+    logger.info(f'Clicking item {n}...')
+    menu_option.click()
+
+
 class Tester:
 
     def setup_method(self, method):
@@ -228,3 +251,6 @@ class Tester:
 
     def wait_for_element_with_text(self, selector, text, wait=BASIC_WAIT):
         return wait_for_element_with_text(self.driver, selector, text, wait=wait)
+
+    def click_nth_context_menu_option(self, elt_sel, menu_table_id, n, label):
+        return click_nth_context_menu_option(self.driver, elt_sel, menu_table_id, n, label, logger_name=self.logger_name)
