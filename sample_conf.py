@@ -147,9 +147,16 @@ JANUSGRAPH_PORT = 8183
 # this will be replaced by the PFSC_ISE_MCA_PORT value configured above.
 SEL_PISE_URL = "http://localhost:<MCA_PORT>"
 # Legal browsers are: "CHROME" and "FIREFOX"
-SEL_BROWSER = "FIREFOX"
-# Boolean:
-SEL_HEADLESS = True
+SEL_BROWSER = "CHROME"
+# Basic timeout (seconds):
+SEL_BASIC_WAIT = 3
+# Run browser headless?
+SEL_HEADLESS = False
+# If not headless, keep browser open after test runs?
+SEL_STAY_OPEN = False
+# Window size
+SEL_WINDOW_WIDTH = 1920 - 100
+SEL_WINDOW_HEIGHT = 1080 - 100
 
 # Docker Image Tags
 #
