@@ -36,5 +36,9 @@ ENV ISE_VERSION {{ise_version}}
 ENV FLASK_CONFIG OCA
 # Set to accept user config from PFSC_ROOT/deploy/pfsc.conf:
 ENV LOAD_PFSC_CONF_FROM_STANDARD_DEPLOY_DIR 1
+# Want to distribute an image that's ready to work with some of the more
+# obvious candidate libraries, without requiring tricky configuration steps
+# for brand new users.
+ENV PFSC_DEFAULT_TRUSTED_LIBPATHS "gh.toepproj"
 # For continuous logging from the Flask web app:
 ENV PYTHONUNBUFFERED 1
