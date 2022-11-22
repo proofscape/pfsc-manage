@@ -149,11 +149,11 @@ SEL_PISE_URL = "http://localhost:<MCA_PORT>"
 # Legal browsers are: "CHROME" and "FIREFOX"
 SEL_BROWSER = "CHROME"
 # Log level:
-SEL_LOG_LEVEL = "INFO"
+SEL_LOG_LEVEL = "DEBUG"
 # Server ready timeout (seconds):
-SEL_SERVER_READY_TIMEOUT = 10
+SEL_SERVER_READY_TIMEOUT = 20
 # Basic timeout (seconds):
-SEL_BASIC_WAIT = 3
+SEL_BASIC_WAIT = 20
 # Run browser headless?
 SEL_HEADLESS = True
 # If not headless, keep browser open after test runs?
