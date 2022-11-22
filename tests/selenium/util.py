@@ -18,6 +18,7 @@
 
 import time
 import logging
+import pathlib
 
 import requests
 from requests.exceptions import ConnectionError
@@ -30,6 +31,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 
 import conf as pfsc_conf
+from manage import PFSC_ROOT
 
 BASIC_WAIT = pfsc_conf.SEL_BASIC_WAIT
 
@@ -279,6 +281,11 @@ class Tester:
         self.logger_name = 'root'
 
     def teardown_method(self, method):
+        if pfsc_conf.SEL_TAKE_FINAL_SCREENSHOT:
+            p = pathlib.Path(PFSC_ROOT) / 'selenium_screenshots'
+            p.mkdir(exist_ok=True)
+            p /= f'{self.__class__.__name__}.png'
+            self.driver.save_screenshot(p)
         if pfsc_conf.SEL_HEADLESS or not pfsc_conf.SEL_STAY_OPEN:
             self.driver.quit()
 

@@ -154,6 +154,8 @@ SEL_LOG_LEVEL = "DEBUG"
 SEL_SERVER_READY_TIMEOUT = 20
 # Basic timeout (seconds):
 SEL_BASIC_WAIT = 20
+# Take final screenshot?
+SEL_TAKE_FINAL_SCREENSHOT = True
 # Run browser headless?
 SEL_HEADLESS = True
 # If not headless, keep browser open after test runs?
