@@ -34,6 +34,7 @@ class TestBasicRun01(Tester):
         self.load_page(pise_url)
         time.sleep(1)
         self.dismiss_cookie_notice()
+        self.check_user_menu()
         self.login_as_test_user('hist', wait=1)
 
         repopath = "test.hist.lit"
@@ -72,3 +73,7 @@ class TestBasicRun01(Tester):
         self.wait_for_element_invisible(s_feedback_area, wait=30)
         dt = time.time() - t0
         logger.info(f'Feedback monitor hidden. Build took {dt:.2f}s.')
+
+        # Wait a second and log out
+        time.sleep(1)
+        self.log_out()
