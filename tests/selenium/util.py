@@ -71,9 +71,9 @@ def dismiss_cookie_notice(driver, logger_name='root'):
     Dismiss the cookie notice, if any.
     """
     logger = logging.getLogger(logger_name)
-    button = driver.find_element(By.CSS_SELECTOR, "body > div.noticeBox > div.buttonRow > button")
-    if button:
-        button.click()
+    buttons = driver.find_elements(By.CSS_SELECTOR, "body > div.noticeBox > div.buttonRow > button")
+    if buttons:
+        buttons[0].click()
         logger.info("Dismissed cookie notice")
     else:
         logger.info("Found no cookie notice")
