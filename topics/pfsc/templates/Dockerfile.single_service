@@ -32,9 +32,10 @@ USER pfsc
 
 # For continuous logging from the Flask web app:
 ENV PYTHONUNBUFFERED 1
-
+# We set PFSC_RUN_AS_WEB_SERVER nonempty so that, by default, the container
+# will run as a web server.
+# To instead start an RQ worker, set PFSC_RUN_AS_WORKER nonempty.
+# To instead start a math worker, set PFSC_RUN_AS_MATH_WORKER nonempty.
+# (Either of these settings will override the one we hard-code here.)
+ENV PFSC_RUN_AS_WEB_SERVER 1
 ENTRYPOINT ["./startup.sh"]
-# Default CMD starts up the web server.
-# To instead start an RQ worker, pass `worker` on the commandline.
-# To instead start a math worker, pass `worker math`.
-CMD ["websrv"]

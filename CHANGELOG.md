@@ -11,6 +11,10 @@ Enhancements:
   has to be set if you want to load the ISE bundle remotely *and* want it at
   a version other than that checked out in the neighboring `pfsc-ise` repo.
 
+Other Changes:
+
+* Switch to env-var-based startup for `pfsc-server` docker containers.
+
 
 ## 0.25.0 (221028)
 

@@ -56,6 +56,5 @@ USER pfsc
 
 # For continuous logging from the Flask web app:
 ENV PYTHONUNBUFFERED 1
-
+ENV PFSC_RUN_AS_WEB_SERVER 1
 ENTRYPOINT ["./startup.sh"]
-CMD ["websrv"]

@@ -236,12 +236,15 @@ def pfsc_server(deploy_dir_path, mode, flask_config, tag='latest',
         'environment': {
             "FLASK_CONFIG": flask_config,
         },
-        'command': {
-            'websrv': ["websrv"],
-            'worker': ["worker"],
-            'math':   ["worker", "math"],
-        }[mode]
     }
+
+    mode_env_var = {
+        'websrv': 'PFSC_RUN_AS_WEB_SERVER',
+        'worker': 'PFSC_RUN_AS_WORKER',
+        'math': 'PFSC_RUN_AS_MATH_WORKER',
+    }[mode]
+    d['environment'][mode_env_var] = 1
+
     gdb = gdb or [GdbCode.RE]
     if mode == 'websrv':
         d['depends_on'].extend(GdbCode.service_name(code) for code in gdb if code in GdbCode.via_container)
