@@ -227,7 +227,12 @@ class Tester:
         return load_page(self.driver, url, logger_name=self.logger_name)
 
     def find_element(self, selector):
+        """Returns single element or raises exception"""
         return self.driver.find_element(By.CSS_SELECTOR, selector)
+
+    def find_elements(self, selector):
+        """Returns list of elements (possibly empty)"""
+        return self.driver.find_elements(By.CSS_SELECTOR, selector)
 
     def dismiss_cookie_notice(self):
         return dismiss_cookie_notice(self.driver, logger_name=self.logger_name)
