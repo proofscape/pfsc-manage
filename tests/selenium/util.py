@@ -217,6 +217,7 @@ class Tester:
 
     def setup_method(self, method):
         self.driver = make_driver()
+        self.driver.delete_all_cookies()
         self.logger_name = 'root'
 
     def teardown_method(self, method):
