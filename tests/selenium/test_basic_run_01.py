@@ -32,6 +32,7 @@ class TestBasicRun01(Tester):
         caplog.set_level(selenium_logging_level, logger=__name__)
 
         self.load_page(pise_url)
+        time.sleep(1)
         self.dismiss_cookie_notice()
         self.login_as_test_user('hist', wait=1)
 
