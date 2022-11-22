@@ -17,49 +17,21 @@
 # --------------------------------------------------------------------------- #
 
 import logging
-import time
 
 import pytest
-import requests
-from requests.exceptions import ConnectionError
 
 import conf as pfsc_conf
-from tests.selenium.util import make_driver
+from tests.selenium.util import make_driver, get_pise_url, check_pise_server
 
 
 @pytest.fixture
 def pise_url():
-    url = pfsc_conf.SEL_PISE_URL
-    url = url.replace("<MCA_PORT>", str(pfsc_conf.PFSC_ISE_MCA_PORT))
-    return url
+    return get_pise_url()
 
 
 @pytest.fixture
 def pise_server_status(pise_url):
-    """
-    Try to connect to the PISE server for up to SEL_SERVER_READY_TIMEOUT seconds.
-    Return a pair (code, message) indicating the result.
-    code ranges from 0 to 4 incl., 4 means the server appears to be ready,
-    anything less means it is not ready.
-    """
-    expected_text = '<title>Proofscape ISE</title>'
-    result = 0, 'unknown issue'
-    for i in range(int(pfsc_conf.SEL_SERVER_READY_TIMEOUT)):
-        try:
-            r = requests.get(pise_url)
-        except ConnectionError:
-            result = 1, 'could not connect'
-        else:
-            if r.status_code == 200:
-                if r.text.find(expected_text) >= 0:
-                    result = 4, 'status 200, and found expected text'
-                    break
-                else:
-                    result = 3, f'status 200, but did not find expected text, "{expected_text}"'
-            else:
-                result = 2, f'status {r.status_code}'
-        time.sleep(1)
-    return result
+    return check_pise_server()
 
 
 @pytest.fixture

@@ -25,13 +25,15 @@ from tests.selenium.util import Tester
 class TestBasicRun01(Tester):
     """Log in as test.hist, and load the test.hist.lit repo @WIP."""
 
-    def test_basic_run_01(self, caplog, pise_url, selenium_logging_level, pise_server_ready):
+    def test_basic_run_01(self, caplog, pise_url, selenium_logging_level):
         logger = logging.getLogger(__name__)
         self.logger_name = __name__
         # https://docs.pytest.org/en/6.2.x/logging.html#caplog-fixture
         caplog.set_level(selenium_logging_level, logger=__name__)
 
-        logger.info(f'PISE server check: {pise_server_ready[1]}')
+        server_status_code, server_status_message = self.check_pise_server()
+        assert server_status_code == 4
+        logger.info(f'PISE server check: {server_status_message}')
 
         self.load_page(pise_url)
         time.sleep(1)
