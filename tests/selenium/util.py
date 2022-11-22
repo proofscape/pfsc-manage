@@ -57,9 +57,13 @@ def make_driver():
     return driver
 
 
-def load_page(driver, url):
+def load_page(driver, url, logger_name='root'):
+    logger = logging.getLogger(logger_name)
     driver.get(url)
-    driver.set_window_size(pfsc_conf.SEL_WINDOW_WIDTH, pfsc_conf.SEL_WINDOW_HEIGHT)
+    logger.info(f"Loaded page {url}")
+    w, h = pfsc_conf.SEL_WINDOW_WIDTH, pfsc_conf.SEL_WINDOW_HEIGHT
+    driver.set_window_size(w, h)
+    logger.info(f"Set page size {w}x{h}")
 
 
 def dismiss_cookie_notice(driver, logger_name='root'):
@@ -220,7 +224,7 @@ class Tester:
             self.driver.quit()
 
     def load_page(self, url):
-        return load_page(self.driver, url)
+        return load_page(self.driver, url, logger_name=self.logger_name)
 
     def find_element(self, selector):
         return self.driver.find_element(By.CSS_SELECTOR, selector)
