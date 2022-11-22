@@ -114,6 +114,26 @@ def login_as_test_user(driver, user, wait=BASIC_WAIT, logger_name='root'):
     logger.info(f"Logged in as test.{user}")
 
 
+def log_out(driver, wait=BASIC_WAIT, logger_name='root'):
+    logger = logging.getLogger(logger_name)
+    driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").click()
+    driver.find_element(By.ID, "dijit_MenuItem_28_text").click()
+    # User menu text should now once again say "User"
+    WebDriverWait(driver, wait).until(expected_conditions.text_to_be_present_in_element((By.ID, "dijit_PopupMenuBarItem_8_text"), "User"))
+    assert driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text").text == "User"
+    logger.info(f"Logged out")
+
+
+def check_user_menu(driver, wait=BASIC_WAIT, logger_name='root'):
+    logger = logging.getLogger(logger_name)
+    menu_text_elt = driver.find_element(By.ID, "dijit_PopupMenuBarItem_8_text")
+    menu_text = menu_text_elt.text
+    if menu_text == "User":
+        logger.info("Appear to be logged out")
+    else:
+        logger.info(f"Appear to be logged in as {menu_text}")
+
+
 def wait_for_element(driver, selector, wait=BASIC_WAIT):
     WebDriverWait(driver, wait).until(expected_conditions.presence_of_element_located((By.CSS_SELECTOR, selector)))
     return driver.find_element(By.CSS_SELECTOR, selector)
@@ -240,6 +260,12 @@ class Tester:
 
     def login_as_test_user(self, user, wait=BASIC_WAIT):
         return login_as_test_user(self.driver, user, wait=wait, logger_name=self.logger_name)
+
+    def log_out(self, wait=BASIC_WAIT):
+        return log_out(self.driver, wait=wait, logger_name=self.logger_name)
+
+    def check_user_menu(self, wait=BASIC_WAIT):
+        return check_user_menu(self.driver, wait=wait, logger_name=self.logger_name)
 
     def open_repo(self, repopath, selector, wait=BASIC_WAIT, select_tab=None):
         return open_repo(self.driver, repopath, selector, wait=wait, select_tab=select_tab, logger_name=self.logger_name)
