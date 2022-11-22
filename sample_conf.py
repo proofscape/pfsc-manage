@@ -150,6 +150,8 @@ SEL_PISE_URL = "http://localhost:<MCA_PORT>"
 SEL_BROWSER = "CHROME"
 # Log level:
 SEL_LOG_LEVEL = "INFO"
+# Server ready timeout (seconds):
+SEL_SERVER_READY_TIMEOUT = 10
 # Basic timeout (seconds):
 SEL_BASIC_WAIT = 3
 # Run browser headless?
